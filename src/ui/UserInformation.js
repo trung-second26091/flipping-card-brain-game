@@ -31,14 +31,14 @@ export default class UserInformation {
 
     /* ===== Background ===== */
     /* ===== Background (Gradient + Border + Shadow) ===== */
-    const width = this.gameWidth * 0.35;
-    const height = this.gameHeight * 0.1;
+    const width = this.gameWidth * 0.37;
+    const height = this.gameHeight * 0.11;
     const radius = 14;
 
     const bgGraphics = scene.add.graphics();
 
     /* ---- BOX SHADOW ---- */
-    bgGraphics.fillStyle(0x000000, 0.35);
+    bgGraphics.fillStyle(0xf0b13b, 0.35);
     bgGraphics.fillRoundedRect(6, 6, width, height, radius);
 
     /* ---- LINEAR GRADIENT ---- */
@@ -56,26 +56,26 @@ export default class UserInformation {
     bgGraphics.fillRoundedRect(0, 0, width, height, radius);
 
     /* ---- BORDER ---- */
-    bgGraphics.lineStyle(10, 0xfacc15, 0.6);
+    bgGraphics.lineStyle(7, 0xfacc15, 0.6);
     bgGraphics.strokeRoundedRect(0, 0, width, height, radius);
 
     /* ---- INNER HIGHLIGHT (glass effect) ---- */
-    bgGraphics.lineStyle(2, 0x88ccff, 0.25);
-    bgGraphics.strokeRoundedRect(2, 2, width - 4, height - 4, radius - 4);
+    // bgGraphics.lineStyle(2, 0x88ccff, 0.25);
+    // bgGraphics.strokeRoundedRect(2, 2, width - 4, height - 4, radius - 4);
 
     /* ===== Avatar ===== */
     this.avatar = scene.add
-      .image(this.gameWidth * 0.07, this.gameHeight * 0.05, "avatar")
+      .image(this.gameWidth * 0.07, this.gameHeight * 0.055, "avatar")
       .setDisplaySize(this.gameWidth * 0.11, this.gameHeight * 0.07);
 
     /* ===== Level ===== */
     const levelIcon = scene.add
-      .image(this.gameWidth * 0.186, this.gameHeight * 0.03, "icon-level")
+      .image(this.gameWidth * 0.186, this.gameHeight * 0.035, "icon-level")
       .setDisplaySize(this.gameWidth * 0.05, this.gameHeight * 0.04);
 
     this.levelText = scene.add.text(
-      this.gameWidth * 0.186 + 20,
-      this.gameHeight * 0.03 - 8,
+      this.gameWidth * 0.186 + 15,
+      this.gameHeight * 0.035 - 8,
       "1",
       {
         fontSize: `${this.gameWidth * 0.04}px`,
@@ -86,12 +86,12 @@ export default class UserInformation {
 
     /* ===== Gold ===== */
     const goldIcon = scene.add
-      .image(this.gameWidth * 0.186, this.gameHeight * 0.07, "icon-gold")
+      .image(this.gameWidth * 0.186, this.gameHeight * 0.075, "icon-gold")
       .setDisplaySize(this.gameWidth * 0.05, this.gameHeight * 0.04);
 
     this.goldText = scene.add.text(
-      this.gameWidth * 0.186 + 20,
-      this.gameHeight * 0.07 - 8,
+      this.gameWidth * 0.186 + 15,
+      this.gameHeight * 0.075 - 8,
       "0",
       {
         fontSize: `${this.gameWidth * 0.04}px`,
@@ -115,7 +115,7 @@ export default class UserInformation {
   ========================== */
 
   setLevel(level) {
-    this.levelText.setText(level);
+    this.levelText.setText("Lv." + level);
 
     this.scene.tweens.add({
       targets: this.levelText,

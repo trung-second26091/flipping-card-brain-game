@@ -24,7 +24,7 @@ export default class PausePopup {
 
     /* ===== MODAL ===== */
     const modalW = this.GW * 0.4;
-    const modalH = this.GH * 0.2;
+    const modalH = this.GH * 0.25;
 
     const x = -modalW / 2;
     const y = -modalH / 2;
@@ -78,7 +78,7 @@ export default class PausePopup {
       onClick: (btn) => toggleSound(scene, btn),
     });
 
-    soundBtn.setDepth(1001);
+    // soundBtn.setDepth(1001);
     this.container.add(soundBtn);
 
     /* ===== RESUME BUTTON (LEFT) ===== */
@@ -92,7 +92,7 @@ export default class PausePopup {
       onClick: () => this.close(),
     });
 
-    resumeBtn.setDepth(1001);
+    // resumeBtn.setDepth(1001);
     this.container.add(resumeBtn);
 
     /* ===== HOME BUTTON (RIGHT) ===== */
@@ -106,7 +106,7 @@ export default class PausePopup {
       onClick: () => this.navigateToMenu(),
     });
 
-    homeBtn.setDepth(1001);
+    // homeBtn.setDepth(1001);
     this.container.add(homeBtn);
 
     /* ===== ANIMATION ===== */
