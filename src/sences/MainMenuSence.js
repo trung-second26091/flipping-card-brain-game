@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { createRectButton } from "../utils/Button";
 import { toggleSound } from "../helpers/SoundHelper";
+import GuidePopup from "../ui/GuidePopup";
 
 export default class MainMenuScene extends Phaser.Scene {
   constructor() {
@@ -123,6 +124,18 @@ export default class MainMenuScene extends Phaser.Scene {
           next: "GameScene",
         });
       },
+    });
+  }
+
+  openGuide() {
+    if (this.guidePopup) return;
+
+    this.guidePopup = new GuidePopup(this);
+
+    // lắng nghe event từ Scene
+    this.events.once("guideClosed", () => {
+      this.input.enabled = true;
+      this.guidePopup = null;
     });
   }
 }

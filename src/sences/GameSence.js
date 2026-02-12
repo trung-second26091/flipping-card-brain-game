@@ -96,7 +96,7 @@ export default class GameScene extends Phaser.Scene {
     // tạo 3 button
     this.createItemButton({
       x: this.GAME_WIDTH * 0.2,
-      y: this.GAME_HEIGHT * 0.91,
+      y: this.GAME_HEIGHT * 0.905,
       width: this.GAME_WIDTH * 0.2,
       height: this.GAME_HEIGHT * 0.16,
       imageKey: "search-skill",
@@ -106,7 +106,7 @@ export default class GameScene extends Phaser.Scene {
 
     this.createItemButton({
       x: this.GAME_WIDTH * 0.5,
-      y: this.GAME_HEIGHT * 0.91,
+      y: this.GAME_HEIGHT * 0.905,
       width: this.GAME_WIDTH * 0.2,
       height: this.GAME_HEIGHT * 0.16,
       imageKey: "card",
@@ -116,7 +116,7 @@ export default class GameScene extends Phaser.Scene {
 
     this.createItemButton({
       x: this.GAME_WIDTH * 0.8,
-      y: this.GAME_HEIGHT * 0.91,
+      y: this.GAME_HEIGHT * 0.905,
       width: this.GAME_WIDTH * 0.2,
       height: this.GAME_HEIGHT * 0.16,
       imageKey: "search-skill",
@@ -169,7 +169,7 @@ export default class GameScene extends Phaser.Scene {
     const radius = 25;
 
     // shadow
-    bg.fillStyle(0x000000, 0.15);
+    bg.fillStyle(0xf0b13b, 0.15);
     bg.fillRoundedRect(x + 6, y + 6, boardWidth, boardHeight, radius);
 
     // gradient
@@ -298,11 +298,11 @@ export default class GameScene extends Phaser.Scene {
 
     /* ================= PRICE ================= */
     const priceIcon = this.add
-      .image(-10, height / 2 - 15, "icon-gold")
+      .image(-10, height / 2 - 13, "icon-gold")
       .setDisplaySize(this.GAME_WIDTH * 0.05, this.GAME_HEIGHT * 0.04);
 
     const priceText = this.add
-      .text(15, height / 2 - 15, price, {
+      .text(10, height / 2 - 13, price, {
         fontSize: "14px",
         fontStyle: "bold",
         color: "#A65F1B",

@@ -38,8 +38,6 @@ export default class GuidePopup {
   create() {
     const scene = this.scene;
 
-    scene.input.enabled = false;
-
     this.container = scene.add.container(this.GW / 2, this.GH / 2);
     this.container.setDepth(2000);
 
@@ -71,7 +69,7 @@ export default class GuidePopup {
     scene.tweens.add({
       targets: this.modal,
       scale: 1,
-      duration: 300,
+      duration: 450,
       ease: "Back.Out",
     });
   }
@@ -148,14 +146,17 @@ export default class GuidePopup {
     this.btnBack = this.createIconButton(-w / 2 + 50, h / 2 - 40, "⬅️", () =>
       this.showPage(this.pageIndex - 1, true, -1),
     );
+    // this.btnBack.setDepth(1001);
 
     this.btnNext = this.createIconButton(w / 2 - 50, h / 2 - 40, "➡️", () =>
       this.showPage(this.pageIndex + 1, true, 1),
     );
+    // this.btnNext.setDepth(1001);
 
     this.btnExit = this.createIconButton(0, h / 2 - 40, "❌", () =>
       this.close(),
     );
+    // this.btnExit.setDepth(1001);
 
     this.buttons.push(this.btnBack, this.btnNext, this.btnExit);
   }
@@ -197,11 +198,13 @@ export default class GuidePopup {
     scene.tweens.add({
       targets: this.modal,
       scale: 0,
-      duration: 250,
+      duration: 350,
       ease: "Back.In",
       onComplete: () => {
         this.container.destroy();
-        scene.input.enabled = true;
+
+        // emit event về Scene
+        scene.events.emit("guideClosed");
       },
     });
   }
