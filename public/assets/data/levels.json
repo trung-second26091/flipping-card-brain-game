@@ -1,0 +1,42 @@
+{
+  "levels": [
+    {
+      "id": 1,
+      "name": "Rectangle 2x3",
+      "shape": [
+        [1, 1, 1],
+        [1, 1, 1]
+      ],
+      "time": 30,
+      "goldReward": 10,
+      "background": "bg_desert"
+    },
+    {
+      "id": 2,
+      "name": "Star",
+      "shape": [
+        [0, 0, 1, 0, 0],
+        [0, 1, 1, 1, 0],
+        [1, 1, 1, 1, 1],
+        [0, 1, 1, 1, 0],
+        [0, 1, 1, 0, 0]
+      ],
+      "time": 45,
+      "goldReward": 10,
+      "background": "bg_desert"
+    },
+    {
+      "id": 3,
+      "name": "T Shape",
+      "shape": [
+        [1, 1, 1, 1, 1],
+        [0, 0, 1, 0, 0],
+        [0, 0, 1, 0, 0],
+        [0, 0, 1, 0, 0]
+      ],
+      "time": 50,
+      "goldReward": 10,
+      "background": "bg_desert"
+    }
+  ]
+}

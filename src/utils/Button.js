@@ -5,7 +5,11 @@ export function createRectButton({
   y,
   width,
   height,
-  icon,
+
+  icon = null, // emoji / short text
+  text = null, // label text
+  imageKey = null, // image texture key
+
   onClick,
   radius = 16,
   bgColor = 0xfacc15,
@@ -25,21 +29,59 @@ export function createRectButton({
   border.lineStyle(borderWidth, borderColor, 0.9);
   border.strokeRoundedRect(-width / 2, -height / 2, width, height, radius);
 
-  /* ===== ICON ===== */
-  const iconText = scene.add
-    .text(0, 0, icon, {
-      fontSize: `${Math.floor(height * 0.45)}px`,
-      color: "#1f2937",
-      fontStyle: "bold",
-    })
-    .setOrigin(0.5);
+  btn.add([bg, border]);
+
+  /* ===== CONTENT ===== */
+  let content;
+
+  // 🔥 PRIORITY: image > icon > text
+  if (imageKey) {
+    content = scene.add
+      .image(0, 0, imageKey)
+      .setDisplaySize(height * 0.6, height * 0.6)
+      .setOrigin(0.5);
+
+    btn.add(content);
+
+    // nếu có thêm text -> đặt dưới image
+    if (text) {
+      const label = scene.add
+        .text(0, height * 0.2, text, {
+          fontSize: `${Math.floor(height * 0.25)}px`,
+          color: "#1f2937",
+          fontStyle: "bold",
+        })
+        .setOrigin(0.5);
+
+      btn.add(label);
+    }
+  } else if (icon) {
+    content = scene.add
+      .text(0, 0, icon, {
+        fontSize: `${Math.floor(height * 0.45)}px`,
+        color: "#1f2937",
+        fontStyle: "bold",
+      })
+      .setOrigin(0.5);
+
+    btn.add(content);
+  } else if (text) {
+    content = scene.add
+      .text(0, 0, text, {
+        fontSize: `${Math.floor(height * 0.35)}px`,
+        color: "#1f2937",
+        fontStyle: "bold",
+      })
+      .setOrigin(0.5);
+
+    btn.add(content);
+  }
 
   /* ===== HIT AREA ===== */
   const hit = scene.add
     .rectangle(0, 0, width, height, 0x000000, 0)
     .setInteractive({ useHandCursor: true });
 
-  /* ===== INTERACTION ===== */
   hit.on("pointerdown", () => {
     scene.tweens.add({
       targets: btn,
@@ -53,7 +95,7 @@ export function createRectButton({
   hit.on("pointerover", () => btn.setScale(hoverScale));
   hit.on("pointerout", () => btn.setScale(1));
 
-  btn.add([bg, border, iconText, hit]);
+  btn.add(hit);
 
   return btn;
 }
