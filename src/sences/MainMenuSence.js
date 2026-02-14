@@ -8,7 +8,13 @@ export default class MainMenuScene extends Phaser.Scene {
     super("MainMenuScene");
   }
 
+  preload() {
+    GuidePopup.preload(this);
+  }
+
   create() {
+    this.guidePopup = null;
+
     const { width, height } = this.scale;
 
     /* ===== ROOT CONTAINER ===== */
