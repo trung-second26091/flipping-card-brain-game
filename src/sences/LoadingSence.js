@@ -55,7 +55,15 @@ export default class LoadingScene extends Phaser.Scene {
   create() {
     // ⏱ đợi thêm 300ms cho mượt UX
     this.time.delayedCall(1000, () => {
-      this.scene.start(this.nextScene);
+      if (this.level !== undefined) {
+        // ✅ Only GameScene needs level
+        this.scene.start(this.nextScene, {
+          level: this.level,
+        });
+      } else {
+        // ✅ Other scenes don't need data
+        this.scene.start(this.nextScene);
+      }
     });
   }
 }

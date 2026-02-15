@@ -25,7 +25,7 @@ export default class GameScene extends Phaser.Scene {
     this.timerManager = null;
   }
 
-  init() {
+  init(data) {
     this.rows = 4;
     this.cols = 4;
     this.gold = 0;
@@ -34,7 +34,7 @@ export default class GameScene extends Phaser.Scene {
     this.GAME_WIDTH = this.game.config.width;
     this.GAME_HEIGHT = this.game.config.height;
     this.skillManager = new SkillManager(this);
-    this.currentLevel = 1;
+    this.currentLevel = data.level || 1;
     this.levelLoader = null;
   }
 
@@ -73,7 +73,6 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("card", "/assets/cards/cucatim.png");
 
     UserInformation.preload(this);
-    this.load.json("levels", "/assets/data/levels.json");
   }
 
   /* ================= UI ================= */
@@ -186,8 +185,9 @@ export default class GameScene extends Phaser.Scene {
       },
 
       onWin: () => {
-        this.timerManager.stop(); // stop current level timer
-        this.nextLevel();
+        // this.timerManager.stop(); // stop current level timer
+        // this.nextLevel();
+        this.handleLevelComplete();
       },
     });
 
@@ -195,47 +195,80 @@ export default class GameScene extends Phaser.Scene {
     this.timerManager.start(levelData.time);
 
     this.userInfo.setLevel(levelNumber);
-
-    console.log("Loaded Level:", levelData.name);
   }
 
-  nextLevel() {
-    this.currentLevel++;
-    this.userInfo.setGold(this.gold);
+  // nextLevel() {
+  //   this.currentLevel++;
+  //   this.userInfo.setGold(this.gold);
 
-    if (this.currentLevel > this.levelLoader.getTotalLevels()) {
-      this.finishGame();
-      return;
-    }
+  //   if (this.currentLevel > this.levelLoader.getTotalLevels()) {
+  //     this.finishGame();
+  //     return;
+  //   }
 
-    this.loadLevel(this.currentLevel);
-  }
+  //   this.loadLevel(this.currentLevel);
+  // }
 
-  finishGame() {
+  handleLevelComplete() {
     this.timerManager.stop();
 
-    const totalTime = this.timerManager.getTotalTimeUsed();
+    const timeUsed = this.timerManager.getTotalTimeUsed();
 
-    console.log("GAME COMPLETED");
-    console.log("Total Time Used:", totalTime);
+    // Load best times
+    let bestTimes = JSON.parse(localStorage.getItem("levelBestTimes")) || {};
 
-    const rankingData = {
-      level: this.currentLevel - 1,
-      gold: this.gold,
-      totalTime: totalTime,
-    };
+    const currentBest = bestTimes[this.currentLevel];
 
-    localStorage.setItem("rankingData", JSON.stringify(rankingData));
+    // Save if better
+    if (!currentBest || timeUsed < currentBest) {
+      bestTimes[this.currentLevel] = timeUsed;
+      localStorage.setItem("levelBestTimes", JSON.stringify(bestTimes));
+    }
 
+    // Reward gold (optional)
+    // this.gold += 20;
+
+    // Show result
     this.add
       .text(
         this.GAME_WIDTH / 2,
         this.GAME_HEIGHT / 2,
-        `🏆 COMPLETED!\nTotal Time: ${totalTime}s`,
+        `🎉 LEVEL ${this.currentLevel} COMPLETE\nTime: ${timeUsed}s`,
         { fontSize: "24px", align: "center" },
       )
       .setOrigin(0.5);
+
+    // Go back to LevelScene after 1.5s
+    this.time.delayedCall(1500, () => {
+      this.scene.start("LevelScene");
+    });
   }
+
+  // finishGame() {
+  //   this.timerManager.stop();
+
+  //   const totalTime = this.timerManager.getTotalTimeUsed();
+
+  //   console.log("GAME COMPLETED");
+  //   console.log("Total Time Used:", totalTime);
+
+  //   const rankingData = {
+  //     level: this.currentLevel - 1,
+  //     gold: this.gold,
+  //     totalTime: totalTime,
+  //   };
+
+  //   localStorage.setItem("rankingData", JSON.stringify(rankingData));
+
+  //   this.add
+  //     .text(
+  //       this.GAME_WIDTH / 2,
+  //       this.GAME_HEIGHT / 2,
+  //       `🏆 COMPLETED!\nTotal Time: ${totalTime}s`,
+  //       { fontSize: "24px", align: "center" },
+  //     )
+  //     .setOrigin(0.5);
+  // }
 
   createPauseButton() {
     const size = 40;
@@ -398,11 +431,16 @@ export default class GameScene extends Phaser.Scene {
 
   loseGame() {
     this.timerManager.stop();
+
     this.add
       .text(this.GAME_WIDTH / 2, this.GAME_HEIGHT / 2, "⏰ TIME UP!", {
         fontSize: "24px",
         color: "#ff5555",
       })
       .setOrigin(0.5);
+
+    this.time.delayedCall(1500, () => {
+      this.scene.start("LevelScene");
+    });
   }
 }

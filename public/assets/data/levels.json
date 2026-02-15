@@ -37,6 +37,58 @@
       "time": 50,
       "goldReward": 10,
       "background": "bg_desert"
+    },
+    {
+      "id": 4,
+      "name": "Rectangle 3x3",
+      "shape": [
+        [1, 1, 1],
+        [1, 1, 1],
+        [1, 1, 1]
+      ],
+      "time": 60,
+      "goldReward": 10,
+      "background": "bg_desert"
+    },
+    {
+      "id": 5,
+      "name": "Rectangle 4x4",
+      "shape": [
+        [1, 1, 1, 1],
+        [1, 1, 1, 1],
+        [1, 1, 1, 1],
+        [1, 1, 1, 1]
+      ],
+      "time": 70,
+      "goldReward": 10,
+      "background": "bg_desert"
+    },
+    {
+      "id": 6,
+      "name": "Snake",
+      "shape": [
+        [1, 1, 1, 1],
+        [0, 0, 0, 1],
+        [1, 1, 1, 1],
+        [1, 0, 0, 0]
+      ],
+      "time": 80,
+      "goldReward": 10,
+      "background": "bg_desert"
+    },
+    {
+      "id": 7,
+      "name": "Hollow Square",
+      "shape": [
+        [1, 1, 1, 1],
+        [1, 0, 0, 1],
+        [1, 0, 0, 1],
+        [1, 0, 0, 1],
+        [1, 1, 1, 1]
+      ],
+      "time": 80,
+      "goldReward": 10,
+      "background": "bg_desert"
     }
   ]
 }
