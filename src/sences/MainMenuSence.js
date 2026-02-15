@@ -127,7 +127,7 @@ export default class MainMenuScene extends Phaser.Scene {
       ease: "Back.In",
       onComplete: () => {
         this.scene.start("LoadingScene", {
-          next: "GameScene",
+          next: "LevelScene",
         });
       },
     });
