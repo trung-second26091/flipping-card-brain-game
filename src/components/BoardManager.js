@@ -15,6 +15,9 @@ export default class BoardManager {
     this.onMatch = config.onMatch;
     this.onWin = config.onWin;
 
+    this.moves = 0;
+    this.onMove = config.onMove;
+
     this.cards = [];
     this.flipped = [];
     this.lock = false;
@@ -115,19 +118,45 @@ export default class BoardManager {
   flipCard(card) {
     if (this.lock || card.isFlipped) return;
 
+    this.lock = true;
     card.isFlipped = true;
-    card.fillColor = card.colorValue;
 
-    this.flipped.push(card);
+    // Shrink (first half)
+    this.scene.tweens.add({
+      targets: card,
+      scaleX: 0,
+      duration: 150,
+      ease: "Linear",
+      onComplete: () => {
+        // Change color at middle
+        card.fillColor = card.colorValue;
 
-    if (this.flipped.length === 2) {
-      this.checkMatch();
-    }
+        // Expand (second half)
+        this.scene.tweens.add({
+          targets: card,
+          scaleX: 1,
+          duration: 150,
+          ease: "Linear",
+          onComplete: () => {
+            this.flipped.push(card);
+
+            if (this.flipped.length === 2) {
+              this.checkMatch();
+            } else {
+              this.lock = false;
+            }
+          },
+        });
+      },
+    });
   }
 
   checkMatch() {
     this.lock = true;
     const [a, b] = this.flipped;
+
+    this.moves++;
+    this.onMove?.(this.moves);
 
     if (a.colorValue === b.colorValue) {
       this.flipped = [];
@@ -136,7 +165,7 @@ export default class BoardManager {
       this.onMatch?.();
 
       if (this.cards.every((c) => c.isFlipped)) {
-        this.onWin?.();
+        this.onWin?.(this.moves);
       }
     } else {
       this.scene.time.delayedCall(700, () => {

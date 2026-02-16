@@ -183,10 +183,7 @@ export default class GuidePopup {
       width: size,
       height: size,
       text: "PLAY",
-      onClick: () => {
-        this.close();
-        this.scene.scene.start("GameScene");
-      },
+      onClick: () => this.startGame(),
     });
 
     this.btnExit = createRectButton({
@@ -216,6 +213,23 @@ export default class GuidePopup {
 
     // PLAY
     this.btnPlay.setVisible(isLast);
+  }
+  startGame() {
+    const scene = this.scene;
+
+    scene.tweens.add({
+      targets: this.modal,
+      scale: 0,
+      duration: 350,
+      ease: "Back.In",
+      onComplete: () => {
+        this.container.destroy();
+
+        scene.scene.start("LoadingScene", {
+          next: "LevelScene",
+        });
+      },
+    });
   }
 
   /* ================= CLOSE ================= */

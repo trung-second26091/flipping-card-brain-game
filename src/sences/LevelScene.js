@@ -5,7 +5,7 @@ export default class LevelScene extends Phaser.Scene {
     super("LevelScene");
 
     this.levels = [];
-    this.bestTimes = {};
+    this.bestMoves = {};
 
     this.currentPage = 0;
     this.levelsPerPage = 6;
@@ -19,20 +19,23 @@ export default class LevelScene extends Phaser.Scene {
   }
 
   create() {
+    this.currentPage = 0;
+    this.dots = [];
+
     const { width, height } = this.scale;
 
-    this.children.removeAll();
-
     this.createBackground();
+
+    this.uiContainer = this.add.container(0, 0);
 
     const data = this.cache.json.get("levels");
     this.levels = data.levels;
 
-    this.bestTimes = JSON.parse(localStorage.getItem("levelBestTimes")) || {};
+    this.bestMoves = JSON.parse(localStorage.getItem("levelBestMoves")) || {};
 
     this.add
       .text(width / 2, height * 0.1, "SELECT LEVEL", {
-        fontSize: "32px",
+        fontSize: `${height * 0.05}px`,
         fontStyle: "bold",
         color: "#000",
       })
@@ -41,6 +44,8 @@ export default class LevelScene extends Phaser.Scene {
     this.createPages();
     this.createPaginationDots();
     this.enableSwipe();
+
+    this.createHomeButton();
   }
 
   /* ================= BACKGROUND ================= */
@@ -120,32 +125,35 @@ export default class LevelScene extends Phaser.Scene {
 
   createLevelButton(level) {
     const container = this.add.container(0, 0);
+    const { width, height } = this.scale;
+    console.log(width);
+    console.log(height);
 
     const bg = this.add
-      .rectangle(0, 0, 160, 120, 0xffd54f)
+      .rectangle(0, 0, width * 0.41, height * 0.215, 0xffd54f)
       .setStrokeStyle(4, 0xffffff)
       .setInteractive({ useHandCursor: true });
 
     const title = this.add
       .text(0, -35, `Level ${level.id}`, {
-        fontSize: "18px",
+        fontSize: `${height * 0.032}px`,
         fontStyle: "bold",
         color: "#000",
       })
       .setOrigin(0.5);
 
     const limit = this.add
-      .text(0, -5, `Limit: ${level.time}s`, {
-        fontSize: "14px",
+      .text(0, -5, `Max Moves: ${level.maxMoves || "--"}`, {
+        fontSize: `${height * 0.025}px`,
         color: "#000",
       })
       .setOrigin(0.5);
 
-    const best = this.bestTimes[level.id];
+    const best = this.bestMoves[level.id];
 
     const bestText = this.add
-      .text(0, 25, best ? `⭐ ${best}s` : "⭐ --", {
-        fontSize: "14px",
+      .text(0, 25, best ? `⭐ ${best} moves` : "⭐ --", {
+        fontSize: `${height * 0.025}px`,
         color: best ? "#2e7d32" : "#555",
       })
       .setOrigin(0.5);
@@ -176,23 +184,82 @@ export default class LevelScene extends Phaser.Scene {
 
     const totalPages = Math.ceil(this.levels.length / this.levelsPerPage);
 
-    const dotSpacing = 20;
+    const paginationY = height - height * 0.05;
+    const dotSpacing = width * 0.05;
     const totalWidth = (totalPages - 1) * dotSpacing;
     const startX = width / 2 - totalWidth / 2;
 
+    // ===== PREV BUTTON =====
+    this.prevBtn = this.add
+      .text(startX - dotSpacing * 2, paginationY, "◀", {
+        fontSize: `${height * 0.04}px`,
+        color: "#333",
+      })
+      .setOrigin(0.5)
+      .setInteractive({ useHandCursor: true });
+
+    this.prevBtn.on("pointerdown", () => this.prevPage());
+
+    // ===== DOTS =====
     for (let i = 0; i < totalPages; i++) {
       const dot = this.add
-        .circle(startX + i * dotSpacing, height - 20, 6, 0x999999)
+        .circle(startX + i * dotSpacing, paginationY, 8, 0xff9800)
+        .setInteractive({ useHandCursor: true })
         .setAlpha(i === 0 ? 1 : 0.4);
+
+      // CLICKABLE DOT
+      dot.on("pointerdown", () => {
+        this.goToPage(i);
+      });
 
       this.dots.push(dot);
     }
+
+    // ===== NEXT BUTTON =====
+    this.nextBtn = this.add
+      .text(startX + totalWidth + dotSpacing * 2, paginationY, "▶", {
+        fontSize: `${height * 0.04}px`,
+        color: "#333",
+      })
+      .setOrigin(0.5)
+      .setInteractive({ useHandCursor: true });
+
+    this.nextBtn.on("pointerdown", () => this.nextPage());
   }
 
   updateDots() {
     this.dots.forEach((dot, index) => {
-      dot.setAlpha(index === this.currentPage ? 1 : 0.4);
+      if (index === this.currentPage) {
+        dot.setFillStyle(0xff9800);
+        dot.setAlpha(1);
+        this.tweens.add({
+          targets: dot,
+          scale: 1.1,
+          duration: 200,
+        });
+      } else {
+        dot.setFillStyle(0xff9800);
+        dot.setAlpha(0.4);
+        dot.setScale(1);
+      }
     });
+  }
+
+  goToPage(pageIndex) {
+    const totalPages = Math.ceil(this.levels.length / this.levelsPerPage);
+
+    if (pageIndex < 0 || pageIndex >= totalPages) return;
+
+    this.currentPage = pageIndex;
+
+    this.tweens.add({
+      targets: this.pagesContainer,
+      x: -this.scale.width * this.currentPage,
+      duration: 300,
+      ease: "Power2",
+    });
+
+    this.updateDots();
   }
 
   /* ================= SWIPE ================= */
@@ -249,5 +316,42 @@ export default class LevelScene extends Phaser.Scene {
     });
 
     this.updateDots();
+  }
+
+  /* ================= BUTTONS ================= */
+  createHomeButton() {
+    const { width, height } = this.scale;
+
+    const btnSize = width * 0.09;
+
+    const homeBtn = this.add
+      .rectangle(width - btnSize, height * 0.1, btnSize, btnSize, 0xffd54f)
+      .setStrokeStyle(3, 0xffffff)
+      .setOrigin(0.5)
+      .setInteractive({ useHandCursor: true });
+
+    const icon = this.add
+      .text(homeBtn.x, homeBtn.y, "🏠", {
+        fontSize: `${btnSize * 0.5}px`,
+      })
+      .setOrigin(0.5);
+
+    homeBtn.on("pointerover", () => homeBtn.setScale(1.1));
+    homeBtn.on("pointerout", () => homeBtn.setScale(1));
+
+    homeBtn.on("pointerdown", () => this.navigateToMenu());
+
+    this.uiContainer.add([homeBtn, icon]);
+  }
+
+  /* ================= NAVIGATION ================= */
+  navigateToMenu() {
+    this.cameras.main.fade(300, 0, 0, 0);
+
+    this.cameras.main.once("camerafadeoutcomplete", () => {
+      this.scene.start("LoadingScene", {
+        next: "MainMenuScene",
+      });
+    });
   }
 }

@@ -8,6 +8,7 @@ export default class LoadingScene extends Phaser.Scene {
   init(data) {
     // scene sẽ chuyển tới sau loading
     this.nextScene = data.next || "MainMenuScene";
+    this.level = data.level;
   }
 
   preload() {

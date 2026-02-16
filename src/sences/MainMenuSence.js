@@ -116,8 +116,6 @@ export default class MainMenuScene extends Phaser.Scene {
     return btn;
   }
   playGame() {
-    this.input.enabled = false;
-
     /* ===== EXIT ANIMATION ===== */
     this.tweens.add({
       targets: this.root,
