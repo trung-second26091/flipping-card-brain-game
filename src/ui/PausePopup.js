@@ -13,7 +13,7 @@ export default class PausePopup {
   create() {
     const scene = this.scene;
 
-    scene.timer && (scene.timer.paused = true);
+    // scene.timer && (scene.timer.paused = true);
 
     this.container = scene.add.container(this.GW / 2, this.GH / 2);
     this.container.setDepth(1000);
@@ -33,7 +33,7 @@ export default class PausePopup {
     const bg = scene.add.graphics();
 
     /* ===== Shadow ===== */
-    bg.fillStyle(0x000000, 0.35);
+    bg.fillStyle(0xf0b13b, 0.35);
     bg.fillRoundedRect(x + 8, y + 8, modalW, modalH, radius);
 
     /* ===== Gradient (Top → Bottom) ===== */
@@ -51,7 +51,7 @@ export default class PausePopup {
     bg.fillRoundedRect(x, y, modalW, modalH, radius);
 
     /* ===== Border ===== */
-    bg.lineStyle(10, 0xfacc15, 0.8);
+    bg.lineStyle(5, 0xfacc15, 0.8);
     bg.strokeRoundedRect(x, y, modalW, modalH, radius);
 
     // ✅ ADD OVERLAY + BG FIRST
@@ -78,7 +78,6 @@ export default class PausePopup {
       onClick: (btn) => toggleSound(scene, btn),
     });
 
-    // soundBtn.setDepth(1001);
     this.container.add(soundBtn);
 
     /* ===== RESUME BUTTON (LEFT) ===== */
@@ -92,7 +91,6 @@ export default class PausePopup {
       onClick: () => this.close(),
     });
 
-    // resumeBtn.setDepth(1001);
     this.container.add(resumeBtn);
 
     /* ===== HOME BUTTON (RIGHT) ===== */
@@ -106,7 +104,6 @@ export default class PausePopup {
       onClick: () => this.navigateToMenu(),
     });
 
-    // homeBtn.setDepth(1001);
     this.container.add(homeBtn);
 
     /* ===== ANIMATION ===== */
@@ -146,7 +143,7 @@ export default class PausePopup {
       ease: "Back.In",
       onComplete: () => {
         this.container.destroy();
-        scene.timer && (scene.timer.paused = false);
+        // scene.timer && (scene.timer.paused = false);
         scene.input.enabled = true;
       },
     });

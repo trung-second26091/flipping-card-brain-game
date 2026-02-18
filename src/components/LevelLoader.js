@@ -12,7 +12,7 @@ export default class LevelLoader {
     return this.levels.length;
   }
 
-  getTime() {
-    return this.getLevel(this.scene.currentLevel).time;
-  }
+  // getTime() {
+  //   return this.getLevel(this.scene.currentLevel).time;
+  // }
 }

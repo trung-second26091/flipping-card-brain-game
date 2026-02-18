@@ -7,7 +7,6 @@
         [1, 1, 1],
         [1, 1, 1]
       ],
-      "time": 30,
       "goldReward": 10,
       "background": "bg_desert"
     },
@@ -21,7 +20,6 @@
         [0, 1, 1, 1, 0],
         [0, 1, 1, 0, 0]
       ],
-      "time": 45,
       "goldReward": 10,
       "background": "bg_desert"
     },
@@ -34,24 +32,11 @@
         [0, 0, 1, 0, 0],
         [0, 0, 1, 0, 0]
       ],
-      "time": 50,
       "goldReward": 10,
       "background": "bg_desert"
     },
     {
       "id": 4,
-      "name": "Rectangle 3x3",
-      "shape": [
-        [1, 1, 1],
-        [1, 1, 1],
-        [1, 1, 1]
-      ],
-      "time": 60,
-      "goldReward": 10,
-      "background": "bg_desert"
-    },
-    {
-      "id": 5,
       "name": "Rectangle 4x4",
       "shape": [
         [1, 1, 1, 1],
@@ -59,7 +44,19 @@
         [1, 1, 1, 1],
         [1, 1, 1, 1]
       ],
-      "time": 70,
+      "goldReward": 10,
+      "background": "bg_desert"
+    },
+    {
+      "id": 5,
+      "name": "Rectangle 5x4",
+      "shape": [
+        [1, 1, 1, 1],
+        [1, 1, 1, 1],
+        [1, 1, 1, 1],
+        [1, 1, 1, 1],
+        [1, 1, 1, 1]
+      ],
       "goldReward": 10,
       "background": "bg_desert"
     },
@@ -72,7 +69,6 @@
         [1, 1, 1, 1],
         [1, 0, 0, 0]
       ],
-      "time": 80,
       "goldReward": 10,
       "background": "bg_desert"
     },
@@ -86,7 +82,48 @@
         [1, 0, 0, 1],
         [1, 1, 1, 1]
       ],
-      "time": 80,
+      "goldReward": 10,
+      "background": "bg_desert"
+    },
+    {
+      "id": 8,
+      "name": "Hollow Square",
+      "shape": [
+        [1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1]
+      ],
+      "goldReward": 10,
+      "background": "bg_desert"
+    },
+    {
+      "id": 9,
+      "name": "2x6 Rectangle",
+      "shape": [
+        [1, 1],
+        [1, 1],
+        [1, 1],
+        [1, 1],
+        [1, 1],
+        [1, 1]
+      ],
+      "goldReward": 10,
+      "background": "bg_desert"
+    },
+    {
+      "id": 10,
+      "name": "3x6 Rectangle",
+      "shape": [
+        [1, 1, 1],
+        [1, 1, 1],
+        [1, 1, 1],
+        [1, 1, 1],
+        [1, 1, 1],
+        [1, 1, 1]
+      ],
       "goldReward": 10,
       "background": "bg_desert"
     }

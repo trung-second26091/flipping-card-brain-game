@@ -5,7 +5,9 @@ import { createRectButton } from "../utils/Button";
 import UserInformation from "../components/UserInformation";
 import LevelLoader from "../components/LevelLoader";
 import BoardManager from "../components/BoardManager";
-import GameTimer from "../components/GameTimer";
+// import GameTimer from "../components/GameTimer";
+import WinPopup from "../ui/WinPopup";
+// import LosePopup from "../ui/LosePopup";
 
 export default class GameScene extends Phaser.Scene {
   constructor() {
@@ -22,7 +24,7 @@ export default class GameScene extends Phaser.Scene {
     this.skillManager = null;
     this.currentLevel = null;
     this.levelLoader = null;
-    this.timerManager = null;
+    // this.timerManager = null;
   }
 
   init(data) {
@@ -41,18 +43,20 @@ export default class GameScene extends Phaser.Scene {
   create() {
     this.createBackground();
 
-    this.createUI();
-
     this.levelLoader = new LevelLoader(this);
 
-    this.timerManager = new GameTimer(this, {
-      onTick: (timeLeft) => {
-        this.timeText.setText(`⏱ Time: ${timeLeft}`);
-      },
-      onTimeUp: () => {
-        this.loseGame();
-      },
-    });
+    this.createUI();
+
+    // this.timerManager = new GameTimer(this, {
+    //   onTick: (timeLeft) => {
+    //     this.timeText.setText(`⏱ Time: ${timeLeft}`);
+    //   },
+    //   onTimeUp: () => {
+    //     this.loseGame();
+    //   },
+    // });
+
+    console.log("Current level:", this.currentLevel);
 
     this.loadLevel(this.currentLevel);
 
@@ -79,77 +83,88 @@ export default class GameScene extends Phaser.Scene {
   createUI() {
     const UI_TOP = 10;
 
-    this.timeText = this.add.text(
-      this.GAME_WIDTH - 100,
+    // this.timeText = this.add.text(
+    //   this.GAME_WIDTH - 100,
+    //   UI_TOP + 50,
+    //   `⏱ Time: ${this.levelLoader.getTime()}`,
+    //   {
+    //     fontSize: `${this.GAME_HEIGHT * 0.02276}px`,
+    //     color: "#030712",
+    //   },
+    // );
+
+    this.moveText = this.add.text(
+      this.GAME_WIDTH - 120,
       UI_TOP + 50,
-      "⏱ Time: 60",
+      `Moves: 0`,
       {
-        fontSize: "14px",
+        fontSize: `${this.GAME_HEIGHT * 0.02276}px`,
         color: "#030712",
       },
     );
-    /* ===== ITEM BAR ===== */
-    const ITEM_BAR_HEIGHT = this.GAME_HEIGHT * 0.2;
 
-    // background
-    const bg = this.add.graphics();
+    // /* ===== ITEM BAR ===== */
+    // const ITEM_BAR_HEIGHT = this.GAME_HEIGHT * 0.2;
 
-    // fillGradientStyle(topLeft, topRight, bottomLeft, bottomRight, alpha)
-    bg.fillGradientStyle(
-      // 0xffb93b, // bottom-right
-      0xfef9c2, // top-left
-      0xfef9c2, // top-right
-      0xfefce8, // bottom-left
-      0xfefce8, // bottom-right
-      0.9, // alpha top
-      0.9,
-      1, // alpha bottom
-      1,
-    );
+    // // background
+    // const bg = this.add.graphics();
 
-    bg.fillRect(
-      0,
-      this.GAME_HEIGHT - ITEM_BAR_HEIGHT,
-      this.GAME_WIDTH,
-      ITEM_BAR_HEIGHT,
-    );
+    // // fillGradientStyle(topLeft, topRight, bottomLeft, bottomRight, alpha)
+    // bg.fillGradientStyle(
+    //   // 0xffb93b, // bottom-right
+    //   0xfef9c2, // top-left
+    //   0xfef9c2, // top-right
+    //   0xfefce8, // bottom-left
+    //   0xfefce8, // bottom-right
+    //   0.9, // alpha top
+    //   0.9,
+    //   1, // alpha bottom
+    //   1,
+    // );
 
-    bg.lineStyle(10, 0xffb93b, 1); // thickness, color, alpha
-    bg.beginPath();
-    bg.moveTo(0, this.GAME_HEIGHT - ITEM_BAR_HEIGHT);
-    bg.lineTo(this.GAME_WIDTH, this.GAME_HEIGHT - ITEM_BAR_HEIGHT);
-    bg.strokePath();
+    // bg.fillRect(
+    //   0,
+    //   this.GAME_HEIGHT - ITEM_BAR_HEIGHT,
+    //   this.GAME_WIDTH,
+    //   ITEM_BAR_HEIGHT,
+    // );
 
-    // tạo 3 button
-    this.createItemButton({
-      x: this.GAME_WIDTH * 0.2,
-      y: this.GAME_HEIGHT * 0.905,
-      width: this.GAME_WIDTH * 0.2,
-      height: this.GAME_HEIGHT * 0.16,
-      imageKey: "search-skill",
-      price: "50",
-      callback: () => this.skillManager.useHint(),
-    });
+    // bg.lineStyle(10, 0xffb93b, 1); // thickness, color, alpha
+    // bg.beginPath();
+    // bg.moveTo(0, this.GAME_HEIGHT - ITEM_BAR_HEIGHT);
+    // bg.lineTo(this.GAME_WIDTH, this.GAME_HEIGHT - ITEM_BAR_HEIGHT);
+    // bg.strokePath();
 
-    this.createItemButton({
-      x: this.GAME_WIDTH * 0.5,
-      y: this.GAME_HEIGHT * 0.905,
-      width: this.GAME_WIDTH * 0.2,
-      height: this.GAME_HEIGHT * 0.16,
-      imageKey: "card",
-      price: "50",
-      callback: () => this.skillManager.addTime(),
-    });
+    // // tạo 3 button
+    // this.createItemButton({
+    //   x: this.GAME_WIDTH * 0.2,
+    //   y: this.GAME_HEIGHT * 0.905,
+    //   width: this.GAME_WIDTH * 0.2,
+    //   height: this.GAME_HEIGHT * 0.16,
+    //   imageKey: "search-skill",
+    //   price: "50",
+    //   callback: () => this.skillManager.useHint(),
+    // });
 
-    this.createItemButton({
-      x: this.GAME_WIDTH * 0.8,
-      y: this.GAME_HEIGHT * 0.905,
-      width: this.GAME_WIDTH * 0.2,
-      height: this.GAME_HEIGHT * 0.16,
-      imageKey: "search-skill",
-      price: "100",
-      callback: () => this.skillManager.openAllCards(),
-    });
+    // this.createItemButton({
+    //   x: this.GAME_WIDTH * 0.5,
+    //   y: this.GAME_HEIGHT * 0.905,
+    //   width: this.GAME_WIDTH * 0.2,
+    //   height: this.GAME_HEIGHT * 0.16,
+    //   imageKey: "card",
+    //   price: "50",
+    //   callback: () => this.skillManager.addTime(),
+    // });
+
+    // this.createItemButton({
+    //   x: this.GAME_WIDTH * 0.8,
+    //   y: this.GAME_HEIGHT * 0.905,
+    //   width: this.GAME_WIDTH * 0.2,
+    //   height: this.GAME_HEIGHT * 0.16,
+    //   imageKey: "search-skill",
+    //   price: "100",
+    //   callback: () => this.skillManager.openAllCards(),
+    // });
 
     this.createPauseButton();
 
@@ -176,99 +191,30 @@ export default class GameScene extends Phaser.Scene {
     this.board = new BoardManager(this, {
       shape: levelData.shape,
       width: this.GAME_WIDTH * 0.7,
-      height: this.GAME_HEIGHT * 0.5,
+      height: this.GAME_HEIGHT * 0.8,
       x: this.GAME_WIDTH / 2,
-      y: this.GAME_HEIGHT / 2 - 30,
+      y: this.GAME_HEIGHT / 2 + this.GAME_HEIGHT * 0.05,
 
       onMatch: () => {
-        this.gold += 1;
+        // this.gold += 1;
       },
 
-      onWin: () => {
+      onMove: (moves) => {
+        this.moveText.setText(`Moves: ${moves}`);
+      },
+
+      onWin: (totalMoves) => {
         // this.timerManager.stop(); // stop current level timer
         // this.nextLevel();
-        this.handleLevelComplete();
+        this.handleLevelComplete(totalMoves);
       },
     });
 
     // ⭐ START TIMER USING LEVEL JSON TIME
-    this.timerManager.start(levelData.time);
+    // this.timerManager.start(levelData.time);
 
     this.userInfo.setLevel(levelNumber);
   }
-
-  // nextLevel() {
-  //   this.currentLevel++;
-  //   this.userInfo.setGold(this.gold);
-
-  //   if (this.currentLevel > this.levelLoader.getTotalLevels()) {
-  //     this.finishGame();
-  //     return;
-  //   }
-
-  //   this.loadLevel(this.currentLevel);
-  // }
-
-  handleLevelComplete() {
-    this.timerManager.stop();
-
-    const timeUsed = this.timerManager.getTotalTimeUsed();
-
-    // Load best times
-    let bestTimes = JSON.parse(localStorage.getItem("levelBestTimes")) || {};
-
-    const currentBest = bestTimes[this.currentLevel];
-
-    // Save if better
-    if (!currentBest || timeUsed < currentBest) {
-      bestTimes[this.currentLevel] = timeUsed;
-      localStorage.setItem("levelBestTimes", JSON.stringify(bestTimes));
-    }
-
-    // Reward gold (optional)
-    // this.gold += 20;
-
-    // Show result
-    this.add
-      .text(
-        this.GAME_WIDTH / 2,
-        this.GAME_HEIGHT / 2,
-        `🎉 LEVEL ${this.currentLevel} COMPLETE\nTime: ${timeUsed}s`,
-        { fontSize: "24px", align: "center" },
-      )
-      .setOrigin(0.5);
-
-    // Go back to LevelScene after 1.5s
-    this.time.delayedCall(1500, () => {
-      this.scene.start("LevelScene");
-    });
-  }
-
-  // finishGame() {
-  //   this.timerManager.stop();
-
-  //   const totalTime = this.timerManager.getTotalTimeUsed();
-
-  //   console.log("GAME COMPLETED");
-  //   console.log("Total Time Used:", totalTime);
-
-  //   const rankingData = {
-  //     level: this.currentLevel - 1,
-  //     gold: this.gold,
-  //     totalTime: totalTime,
-  //   };
-
-  //   localStorage.setItem("rankingData", JSON.stringify(rankingData));
-
-  //   this.add
-  //     .text(
-  //       this.GAME_WIDTH / 2,
-  //       this.GAME_HEIGHT / 2,
-  //       `🏆 COMPLETED!\nTotal Time: ${totalTime}s`,
-  //       { fontSize: "24px", align: "center" },
-  //     )
-  //     .setOrigin(0.5);
-  // }
 
   createPauseButton() {
     const size = 40;
@@ -417,30 +363,63 @@ export default class GameScene extends Phaser.Scene {
   }
 
   /* ================= END ================= */
-  winGame() {
-    this.timer.remove();
-    this.gold += 20;
-    this.goldText.setText(`💰 Gold: ${this.gold}`);
 
-    this.add
-      .text(this.GAME_WIDTH / 2, this.GAME_HEIGHT / 2, "🎉 YOU WIN!", {
-        fontSize: "24px",
-      })
-      .setOrigin(0.5);
-  }
+  handleLevelComplete(totalMoves) {
+    /* ================= SAVE BEST MOVES ================= */
 
-  loseGame() {
-    this.timerManager.stop();
+    let bestMovesData =
+      JSON.parse(localStorage.getItem("levelBestMoves")) || {};
 
-    this.add
-      .text(this.GAME_WIDTH / 2, this.GAME_HEIGHT / 2, "⏰ TIME UP!", {
-        fontSize: "24px",
-        color: "#ff5555",
-      })
-      .setOrigin(0.5);
+    const currentBest = bestMovesData[this.currentLevel];
 
-    this.time.delayedCall(1500, () => {
-      this.scene.start("LevelScene");
+    let isNewRecord = false;
+
+    // Lower moves is better
+    if (!currentBest || totalMoves < currentBest) {
+      bestMovesData[this.currentLevel] = totalMoves;
+      localStorage.setItem("levelBestMoves", JSON.stringify(bestMovesData));
+      isNewRecord = true;
+    }
+
+    /* ================= SHOW WIN POPUP ================= */
+
+    this.winPopup = new WinPopup(this, {
+      level: this.currentLevel,
+      movesUsed: totalMoves,
+      bestMoves: bestMovesData[this.currentLevel],
+      isNewRecord: isNewRecord,
+
+      onReplay: () => {
+        this.scene.restart({ level: this.currentLevel });
+      },
+
+      onNext: () => {
+        const nextLevel = this.currentLevel + 1;
+
+        if (nextLevel > this.levelLoader.getTotalLevels()) {
+          this.scene.start("LevelScene");
+          return;
+        }
+
+        this.scene.restart({ level: nextLevel });
+      },
+
+      onBack: () => {
+        this.scene.start("LevelScene");
+      },
     });
   }
+
+  // loseGame() {
+  //   this.timerManager.stop();
+
+  //   this.losePopup = new LosePopup(this, {
+  //     onReplay: () => {
+  //       this.scene.restart({ level: this.currentLevel });
+  //     },
+  //     onBack: () => {
+  //       this.scene.start("LevelScene");
+  //     },
+  //   });
+  // }
 }
