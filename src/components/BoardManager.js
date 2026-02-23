@@ -35,7 +35,7 @@ export default class BoardManager {
     const radius = 25;
 
     const startX = -this.width / 2;
-    const startY = -this.height / 2;
+    const startY = -this.height / 2 + 10;
 
     bg.fillStyle(0xf0b13b, 0.15);
     bg.fillRoundedRect(startX + 6, startY + 6, this.width, this.height, radius);
@@ -128,7 +128,7 @@ export default class BoardManager {
       duration: 150,
       ease: "Linear",
       onComplete: () => {
-        // Change color at middle
+        // Show front color
         card.fillColor = card.colorValue;
 
         // Expand (second half)
@@ -152,33 +152,63 @@ export default class BoardManager {
   }
 
   checkMatch() {
-    this.lock = true;
     const [a, b] = this.flipped;
 
     this.moves++;
     this.onMove?.(this.moves);
 
+    this.lock = true;
+
     if (a.colorValue === b.colorValue) {
-      this.flipped = [];
-      this.lock = false;
-
-      this.onMatch?.();
-
-      if (this.cards.every((c) => c.isFlipped)) {
-        this.onWin?.(this.moves);
-      }
-    } else {
-      this.scene.time.delayedCall(700, () => {
-        a.isFlipped = false;
-        b.isFlipped = false;
-
-        a.fillColor = 0x444444;
-        b.fillColor = 0x444444;
-
+      // MATCH
+      this.scene.time.delayedCall(300, () => {
         this.flipped = [];
         this.lock = false;
+
+        this.onMatch?.();
+
+        if (this.cards.every((c) => c.isFlipped)) {
+          this.onWin?.(this.moves);
+        }
+      });
+    } else {
+      // NOT MATCH → flip back animation
+      this.scene.time.delayedCall(500, () => {
+        this.flipBack(a);
+        this.flipBack(b);
       });
     }
+  }
+
+  flipBack(card) {
+    this.scene.tweens.add({
+      targets: card,
+      scaleX: 0,
+      duration: 150,
+      ease: "Linear",
+      onComplete: () => {
+        // Hide front
+        card.fillColor = 0x444444;
+        card.isFlipped = false;
+
+        this.scene.tweens.add({
+          targets: card,
+          scaleX: 1,
+          duration: 150,
+          ease: "Linear",
+          onComplete: () => {
+            // When both cards finished closing
+            this.backCount = (this.backCount || 0) + 1;
+
+            if (this.backCount === 2) {
+              this.backCount = 0;
+              this.flipped = [];
+              this.lock = false;
+            }
+          },
+        });
+      },
+    });
   }
 
   destroy() {

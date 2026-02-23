@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import { createRectButton } from "../utils/Button";
 import { toggleSound } from "../helpers/SoundHelper";
 import GuidePopup from "../ui/GuidePopup";
+import { STYLES } from "../styles";
 
 export default class MainMenuScene extends Phaser.Scene {
   constructor() {
@@ -35,6 +36,7 @@ export default class MainMenuScene extends Phaser.Scene {
         fontSize: "38px",
         fontStyle: "bold",
         color: "#fde68a",
+        ...STYLES.TextButton,
       })
       .setOrigin(0.5);
 
@@ -46,6 +48,7 @@ export default class MainMenuScene extends Phaser.Scene {
       .text(width / 2, height * 0.9, "Tap PLAY to start", {
         fontSize: "14px",
         color: "#94a3b8",
+        ...STYLES.TextButton,
       })
       .setOrigin(0.5);
 

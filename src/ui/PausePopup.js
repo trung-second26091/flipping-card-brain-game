@@ -67,18 +67,31 @@ export default class PausePopup {
     const leftX = -(btnSize / 2 + gap / 2);
     const rightX = btnSize / 2 + gap / 2;
 
-    /* ===== SOUND BUTTON (TOP, CENTER) ===== */
-    const soundBtn = createRectButton({
+    /* ===== REPLAY BUTTON (BOTTOM, LEFT) ===== */
+    const replayBtn = createRectButton({
       scene,
-      x: (leftX + rightX) / 2, // ✅ center giữa 2 nút
+      x: leftX,
       y: bottomY,
       width: btnSize,
       height: btnSize,
-      icon: "🔊",
-      onClick: (btn) => toggleSound(scene, btn),
+      icon: "🔄",
+      onClick: () => this.replayLevel(),
     });
 
-    this.container.add(soundBtn);
+    this.container.add(replayBtn);
+
+    /* ===== LEVEL SCENE BUTTON (BOTTOM, RIGHT) ===== */
+    const levelSceneBtn = createRectButton({
+      scene,
+      x: rightX,
+      y: bottomY,
+      width: btnSize,
+      height: btnSize,
+      icon: "📋",
+      onClick: () => this.navigateToLevelScene(),
+    });
+
+    this.container.add(levelSceneBtn);
 
     /* ===== RESUME BUTTON (LEFT) ===== */
     const resumeBtn = createRectButton({
@@ -101,7 +114,7 @@ export default class PausePopup {
       width: btnSize,
       height: btnSize,
       icon: "🏠",
-      onClick: () => this.navigateToMenu(),
+      onClick: () => this.navigateToMenuScene(),
     });
 
     this.container.add(homeBtn);
@@ -116,7 +129,7 @@ export default class PausePopup {
     });
   }
 
-  navigateToMenu() {
+  navigateToMenuScene() {
     const scene = this.scene;
 
     scene.tweens.add({
@@ -128,6 +141,41 @@ export default class PausePopup {
       onComplete: () => {
         scene.scene.start("LoadingScene", {
           next: "MainMenuScene",
+        });
+      },
+    });
+  }
+
+  navigateToLevelScene() {
+    const scene = this.scene;
+
+    scene.tweens.add({
+      targets: this.container,
+      scale: 0,
+      alpha: 0,
+      duration: 300,
+      ease: "Back.In",
+      onComplete: () => {
+        scene.scene.start("LoadingScene", {
+          next: "LevelScene",
+        });
+      },
+    });
+  }
+
+  replayLevel() {
+    const scene = this.scene;
+
+    scene.tweens.add({
+      targets: this.container,
+      scale: 0,
+      alpha: 0,
+      duration: 300,
+      ease: "Back.In",
+      onComplete: () => {
+        scene.scene.start("LoadingScene", {
+          next: "GameScene",
+          level: scene.currentLevel,
         });
       },
     });

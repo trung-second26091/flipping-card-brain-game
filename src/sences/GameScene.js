@@ -52,7 +52,6 @@ export default class GameScene extends Phaser.Scene {
     //     this.timeText.setText(`⏱ Time: ${timeLeft}`);
     //   },
     //   onTimeUp: () => {
-    //     this.loseGame();
     //   },
     // });
 
@@ -93,15 +92,10 @@ export default class GameScene extends Phaser.Scene {
     //   },
     // );
 
-    this.moveText = this.add.text(
-      this.GAME_WIDTH - 120,
-      UI_TOP + 50,
-      `Moves: 0`,
-      {
-        fontSize: `${this.GAME_HEIGHT * 0.02276}px`,
-        color: "#030712",
-      },
-    );
+    this.moveText = this.add.text(this.GAME_WIDTH - 140, 30, `Moves: 0`, {
+      fontSize: `${this.GAME_HEIGHT * 0.02276}px`,
+      color: "#030712",
+    });
 
     // /* ===== ITEM BAR ===== */
     // const ITEM_BAR_HEIGHT = this.GAME_HEIGHT * 0.2;
@@ -172,7 +166,7 @@ export default class GameScene extends Phaser.Scene {
     this.userInfo = new UserInformation(this);
 
     this.userInfo.setLevel(1);
-    this.userInfo.setGold(0);
+    this.userInfo.setHighest(0);
   }
 
   loadLevel(levelNumber) {
@@ -214,6 +208,12 @@ export default class GameScene extends Phaser.Scene {
     // this.timerManager.start(levelData.time);
 
     this.userInfo.setLevel(levelNumber);
+
+    let bestMovesData =
+      JSON.parse(localStorage.getItem("levelBestMoves")) || {};
+
+    const currentBest = bestMovesData[levelNumber] || 0;
+    this.userInfo.setHighest(currentBest);
   }
 
   createPauseButton() {
@@ -409,17 +409,4 @@ export default class GameScene extends Phaser.Scene {
       },
     });
   }
-
-  // loseGame() {
-  //   this.timerManager.stop();
-
-  //   this.losePopup = new LosePopup(this, {
-  //     onReplay: () => {
-  //       this.scene.restart({ level: this.currentLevel });
-  //     },
-  //     onBack: () => {
-  //       this.scene.start("LevelScene");
-  //     },
-  //   });
-  // }
 }

@@ -4,7 +4,7 @@ export default class UserInformation {
   ========================== */
   static preload(scene) {
     scene.load.image("icon-level", "/assets/ui/level.png");
-    scene.load.image("icon-gold", "/assets/ui/coin.png");
+    scene.load.image("icon-highest", "/assets/ui/highest_move.png");
     scene.load.image("avatar", "/assets/ui/avatar.jpeg");
   }
 
@@ -85,11 +85,11 @@ export default class UserInformation {
     );
 
     /* ===== Gold ===== */
-    const goldIcon = scene.add
-      .image(this.gameWidth * 0.186, this.gameHeight * 0.075, "icon-gold")
+    const highestIcon = scene.add
+      .image(this.gameWidth * 0.186, this.gameHeight * 0.075, "icon-highest")
       .setDisplaySize(this.gameWidth * 0.05, this.gameHeight * 0.04);
 
-    this.goldText = scene.add.text(
+    this.highestText = scene.add.text(
       this.gameWidth * 0.186 + 15,
       this.gameHeight * 0.075 - 8,
       "0",
@@ -105,8 +105,8 @@ export default class UserInformation {
       this.avatar,
       levelIcon,
       this.levelText,
-      goldIcon,
-      this.goldText,
+      highestIcon,
+      this.highestText,
     ]);
   }
 
@@ -125,11 +125,11 @@ export default class UserInformation {
     });
   }
 
-  setGold(gold) {
-    this.goldText.setText(gold);
+  setHighest(highestScore) {
+    this.highestText.setText(highestScore);
 
     this.scene.tweens.add({
-      targets: this.goldText,
+      targets: this.highestText,
       scale: 1.3,
       yoyo: true,
       duration: 150,

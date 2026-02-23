@@ -143,7 +143,7 @@ export default class LevelScene extends Phaser.Scene {
       .setOrigin(0.5);
 
     const limit = this.add
-      .text(0, -5, `Max Moves: ${level.maxMoves || "--"}`, {
+      .text(0, -5, `Least Moves: ${level.maxMoves || "--"}`, {
         fontSize: `${height * 0.025}px`,
         color: "#000",
       })
