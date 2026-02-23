@@ -1,3 +1,5 @@
+import { STYLES } from "../styles";
+
 // ui/ButtonUtils.js
 export function createRectButton({
   scene,
@@ -50,6 +52,7 @@ export function createRectButton({
           fontSize: `${Math.floor(height * 0.25)}px`,
           color: "#1f2937",
           fontStyle: "bold",
+          ...STYLES.TextButton,
         })
         .setOrigin(0.5);
 
@@ -61,6 +64,7 @@ export function createRectButton({
         fontSize: `${Math.floor(height * 0.45)}px`,
         color: "#1f2937",
         fontStyle: "bold",
+        ...STYLES.TextButton,
       })
       .setOrigin(0.5);
 
@@ -71,6 +75,7 @@ export function createRectButton({
         fontSize: `${Math.floor(height * 0.35)}px`,
         color: "#1f2937",
         fontStyle: "bold",
+        ...STYLES.TextButton,
       })
       .setOrigin(0.5);
 
