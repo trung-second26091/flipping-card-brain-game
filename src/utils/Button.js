@@ -15,6 +15,7 @@ export function createRectButton({
   onClick,
   radius = 16,
   bgColor = 0xfacc15,
+  opacity = 1,
   borderColor = 0xffffff,
   borderWidth = 2,
   hoverScale = 1.1,
@@ -23,7 +24,7 @@ export function createRectButton({
 
   /* ===== BACKGROUND ===== */
   const bg = scene.add.graphics();
-  bg.fillStyle(bgColor, 1);
+  bg.fillStyle(bgColor, opacity);
   bg.fillRoundedRect(-width / 2, -height / 2, width, height, radius);
 
   /* ===== BORDER ===== */
@@ -39,8 +40,8 @@ export function createRectButton({
   // 🔥 PRIORITY: image > icon > text
   if (imageKey) {
     content = scene.add
-      .image(0, 0, imageKey)
-      .setDisplaySize(height * 0.6, height * 0.6)
+      .image(imageKey && text ? width * 0.1 - 50 : 0, 0, imageKey)
+      .setDisplaySize(height * 0.5, height * 0.5)
       .setOrigin(0.5);
 
     btn.add(content);
@@ -48,8 +49,8 @@ export function createRectButton({
     // nếu có thêm text -> đặt dưới image
     if (text) {
       const label = scene.add
-        .text(0, height * 0.2, text, {
-          fontSize: `${Math.floor(height * 0.25)}px`,
+        .text(width * 0.1, 0, text, {
+          fontSize: `${Math.floor(height * 0.3)}px`,
           color: "#1f2937",
           fontStyle: "bold",
           ...STYLES.TextButton,
@@ -92,7 +93,7 @@ export function createRectButton({
       targets: btn,
       scale: hoverScale + 0.1,
       yoyo: true,
-      duration: 120,
+      duration: 10,
     });
     onClick?.(btn);
   });

@@ -1,18 +1,24 @@
 export function toggleSound(scene, btn) {
   scene.soundOn = !scene.soundOn;
 
-  // mute / unmute Phaser sound
+  // Mute / unmute Phaser sound
   scene.sound.mute = !scene.soundOn;
 
-  // đổi icon
-  const iconText = btn.list.find((c) => c.type === "Text");
-  iconText.setText(scene.soundOn ? "🔊" : "🔇");
+  // Find the image in the container
+  const imageChild = btn.list.find((child) => child.type === "Image");
 
-  // click animation
-  scene.tweens.add({
-    targets: btn,
-    scale: 1.25,
-    yoyo: true,
-    duration: 120,
-  });
+  if (imageChild) {
+    // Change image
+    const newKey = scene.soundOn ? "sound-on-button" : "sound-off-button";
+    imageChild.setTexture(newKey);
+
+    // Optional: nice little feedback
+    // scene.tweens.add({
+    //   targets: imageChild,
+    //   scale: 1.3,
+    //   duration: 90,
+    //   yoyo: true,
+    //   ease: "Sine.easeOut",
+    // });
+  }
 }

@@ -11,6 +11,12 @@ export default class MainMenuScene extends Phaser.Scene {
 
   preload() {
     GuidePopup.preload(this);
+
+    this.load.image("logo", "/assets/ui/logo.png");
+    this.load.image("play-button", "/assets/ui/play_btn.png");
+    this.load.image("guide-button", "/assets/ui/guide_btn.png");
+    this.load.image("sound-on-button", "/assets/ui/sound_on_btn.png");
+    this.load.image("sound-off-button", "/assets/ui/sound_off_btn.png");
   }
 
   create() {
@@ -22,37 +28,68 @@ export default class MainMenuScene extends Phaser.Scene {
     this.root = this.add.container(0, 0);
 
     /* ===== BACKGROUND ===== */
-    const bg = this.add.rectangle(
-      width / 2,
-      height / 2,
-      width,
-      height,
-      0x0f172a,
+    const bg = this.add.graphics();
+
+    bg.fillGradientStyle(
+      0xffc105,
+      0x231e0f,
+      0x231e0f,
+      0xffc105,
+      0.1,
+      1,
+      1,
+      0.1,
     );
 
+    bg.fillRect(0, 0, width, height);
+
     /* ===== TITLE ===== */
-    const title = this.add
-      .text(width / 2, height * 0.3, "🧠 Flipping Brain", {
-        fontSize: "38px",
+    // const title = this.add
+    //   .text(width / 2, height * 0.3, "Flipping Brain", {
+    //     fontSize: "38px",
+    //     fontStyle: "bold",
+    //     color: "#fde68a",
+    //     ...STYLES.TextButton,
+    //   })
+    //   .setOrigin(0.5);
+
+    const titleLogo = this.add
+      .image(width / 2, height * 0.35, "logo")
+      .setOrigin(0.5)
+      .setScale(0.4);
+
+    const titleTop = this.add
+      .text(width / 2, height * 0.52, "Flipping", {
+        fontSize: "42px",
         fontStyle: "bold",
         color: "#fde68a",
         ...STYLES.TextButton,
       })
       .setOrigin(0.5);
 
-    /* ===== PLAY BUTTON ===== */
-    const playBtn = this.createPlayButton(width / 2, height * 0.55);
-
-    /* ===== FOOTER ===== */
-    const footer = this.add
-      .text(width / 2, height * 0.9, "Tap PLAY to start", {
-        fontSize: "14px",
-        color: "#94a3b8",
+    // BRAIN (white)
+    const titleBottom = this.add
+      .text(width / 2, height * 0.62, "Brain", {
+        fontSize: "42px",
+        fontStyle: "bold",
+        color: "#ffffff",
         ...STYLES.TextButton,
       })
       .setOrigin(0.5);
 
-    this.root.add([bg, title, playBtn, footer]);
+    /* ===== PLAY BUTTON ===== */
+    const playBtn = this.createPlayButton(width / 2, height * 0.85);
+
+    /* ===== FOOTER ===== */
+    // const footer = this.add
+    //   .text(width / 2, height * 0.9, "Tap PLAY to start", {
+    //     fontSize: "18px",
+    //     color: "#94A3B8",
+    //     ...STYLES.TextButton,
+    //   })
+    //   .setOrigin(0.5);
+
+    this.root.add([bg, titleLogo, titleTop, titleBottom, playBtn]);
 
     /* ===== INTRO ANIMATION ===== */
     this.root.setAlpha(0);
@@ -68,17 +105,19 @@ export default class MainMenuScene extends Phaser.Scene {
 
     /* ===== ICON BUTTONS ===== */
     this.soundOn = true;
-    const size = 40;
+    const size = 50;
 
     const guideBtn = createRectButton({
       scene: this,
-      x: width - 110,
+      x: width - 115,
       y: 50,
       width: size,
       height: size,
-      icon: "❓",
+      imageKey: "guide-button",
       onClick: () => this.openGuide(),
-      radius: 5,
+      radius: size / 2,
+      bgColor: 0xffc105,
+      opacity: 0.05,
     });
 
     const soundBtn = createRectButton({
@@ -87,9 +126,11 @@ export default class MainMenuScene extends Phaser.Scene {
       y: 50,
       width: size,
       height: size,
-      icon: "🔊",
+      imageKey: "sound-on-button",
       onClick: () => toggleSound(this, soundBtn),
-      radius: 5,
+      radius: size / 2,
+      bgColor: 0xffc105,
+      opacity: 0.05,
     });
 
     this.root.add([guideBtn, soundBtn]);
@@ -102,7 +143,8 @@ export default class MainMenuScene extends Phaser.Scene {
       y,
       width: 240,
       height: 70,
-      icon: "▶ PLAY",
+      text: "PLAY",
+      imageKey: "play-button",
       onClick: () => this.playGame(),
     });
 
