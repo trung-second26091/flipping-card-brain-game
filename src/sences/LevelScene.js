@@ -99,7 +99,7 @@ export default class LevelScene extends Phaser.Scene {
     const startX = width / 2 - totalGridWidth / 2;
 
     // Leave space for title (top UI)
-    const topOffset = height * 0.1;
+    const topOffset = height * 0.05;
 
     // Remaining space after title
     const availableHeight = height - topOffset;
