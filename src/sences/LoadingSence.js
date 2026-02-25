@@ -34,7 +34,7 @@ export default class LoadingScene extends Phaser.Scene {
     this.progressBar = this.add.graphics();
 
     this.progressBox.fillStyle(0x222222, 0.8);
-    this.progressBox.fillRoundedRect(width / 2 - 70, height / 2, 350, 30, 10);
+    this.progressBox.fillRoundedRect(width / 2 - 70, height / 2, 230, 30, 10);
 
     // Create percentage text (above right of progress bar)
     this.percentText = this.add

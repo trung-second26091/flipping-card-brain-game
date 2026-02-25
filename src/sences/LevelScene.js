@@ -1,4 +1,6 @@
 import Phaser from "phaser";
+import { STYLES } from "../styles";
+import { createRectButton } from "../utils/Button";
 
 export default class LevelScene extends Phaser.Scene {
   constructor() {
@@ -16,6 +18,9 @@ export default class LevelScene extends Phaser.Scene {
 
   preload() {
     this.load.json("levels", "/assets/data/levels.json");
+    this.load.image("home-button", "/assets/ui/home.png");
+    this.load.image("least-moves", "/assets/ui/least_moves.png");
+    this.load.image("best-moves", "/assets/ui/best_moves.png");
   }
 
   create() {
@@ -34,10 +39,11 @@ export default class LevelScene extends Phaser.Scene {
     this.bestMoves = JSON.parse(localStorage.getItem("levelBestMoves")) || {};
 
     this.add
-      .text(width / 2, height * 0.1, "SELECT LEVEL", {
+      .text(width / 2, height * 0.1, "MISSIONS", {
         fontSize: `${height * 0.05}px`,
         fontStyle: "bold",
-        color: "#000",
+        color: "#FFC105",
+        ...STYLES.TextButton,
       })
       .setOrigin(0.5);
 
@@ -46,6 +52,27 @@ export default class LevelScene extends Phaser.Scene {
     this.enableSwipe();
 
     this.createHomeButton();
+
+    /* ===== INTRO ANIMATION ===== */
+    this.uiContainer.setAlpha(0);
+    this.uiContainer.y = 40;
+
+    this.tweens.add({
+      targets: this.uiContainer,
+      alpha: 1,
+      y: 0,
+      duration: 500,
+      ease: "Power2.Out",
+    });
+
+    this.pagesContainer.setAlpha(0);
+
+    this.tweens.add({
+      targets: this.pagesContainer,
+      alpha: 1,
+      duration: 500,
+      ease: "Power2.Out",
+    });
   }
 
   /* ================= BACKGROUND ================= */
@@ -54,7 +81,7 @@ export default class LevelScene extends Phaser.Scene {
     const { width, height } = this.scale;
 
     const bg = this.add.graphics();
-    bg.fillGradientStyle(0xfefce8, 0xfefce8, 0xfef9c2, 0xfef9c2, 1);
+    bg.fillGradientStyle(0x231e0f, 0x231e0f, 0x231e0f, 0x231e0f, 0.1, 1, 1, 1);
     bg.fillRect(0, 0, width, height);
   }
 
@@ -126,46 +153,102 @@ export default class LevelScene extends Phaser.Scene {
   createLevelButton(level) {
     const container = this.add.container(0, 0);
     const { width, height } = this.scale;
-    console.log(width);
-    console.log(height);
 
-    const bg = this.add
-      .rectangle(0, 0, width * 0.41, height * 0.215, 0xffd54f)
-      .setStrokeStyle(4, 0xffffff)
-      .setInteractive({ useHandCursor: true });
+    const buttonWidth = width * 0.41;
+    const buttonHeight = height * 0.215;
+    const radius = 24; // Border radius
 
+    // Create background with linear gradient using Graphics
+    const bg = this.add.graphics();
+
+    bg.fillGradientStyle(
+      0x231e0f,
+      0xffc105,
+      0x231e0f,
+      0x231e0f,
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+    );
+
+    bg.fillRoundedRect(
+      -buttonWidth / 2,
+      -buttonHeight / 2,
+      buttonWidth,
+      buttonHeight,
+      radius,
+    );
+
+    // Add border
+    bg.lineStyle(2, 0xffc105, 1);
+    bg.strokeRoundedRect(
+      -buttonWidth / 2,
+      -buttonHeight / 2,
+      buttonWidth,
+      buttonHeight,
+      radius,
+    );
+
+    // Text elements
     const title = this.add
-      .text(0, -35, `Level ${level.id}`, {
-        fontSize: `${height * 0.032}px`,
-        fontStyle: "bold",
-        color: "#000",
+      .text(
+        0,
+        -buttonHeight * 0.25,
+        `${level.id > 9 ? level.id : "0" + level.id}`,
+        {
+          fontSize: `${height * 0.07}px`,
+          fontStyle: "bold",
+          color: "#FFC105",
+          stroke: "#ffffff",
+          strokeThickness: 1,
+          ...STYLES.TextButton,
+        },
+      )
+      .setOrigin(0.5);
+
+    const limitImage = this.add
+      .image(-10, buttonHeight * 0.05, "least-moves")
+      .setDisplaySize(height * 0.025, height * 0.025)
+      .setOrigin(0.5);
+    const limit = this.add
+      .text(10, buttonHeight * 0.05, `${level.maxMoves || "--"}`, {
+        fontSize: `${height * 0.025}px`,
+        color: "#94A3B8",
+        ...STYLES.TextButton,
       })
       .setOrigin(0.5);
 
-    const limit = this.add
-      .text(0, -5, `Least Moves: ${level.maxMoves || "--"}`, {
-        fontSize: `${height * 0.025}px`,
-        color: "#000",
-      })
+    const bestImage = this.add
+      .image(-10, buttonHeight * 0.25, "best-moves")
+      .setDisplaySize(height * 0.025, height * 0.025)
       .setOrigin(0.5);
 
     const best = this.bestMoves[level.id];
-
     const bestText = this.add
-      .text(0, 25, best ? `⭐ ${best} moves` : "⭐ --", {
+      .text(10, buttonHeight * 0.25, best ? `${best}` : "--", {
         fontSize: `${height * 0.025}px`,
-        color: best ? "#2e7d32" : "#555",
+        color: best ? "#FFC105" : "#555555",
+        ...STYLES.TextButton,
       })
       .setOrigin(0.5);
+    const hitArea = this.add
+      .rectangle(0, 0, buttonWidth, buttonHeight, 0x000000, 0)
+      .setInteractive({ useHandCursor: true });
 
-    container.add([bg, title, limit, bestText]);
+    container.add([bg, hitArea, title, limitImage, limit, bestImage, bestText]);
 
-    bg.on("pointerover", () => container.setScale(1.08));
-    bg.on("pointerout", () => container.setScale(1));
+    // Interactive effects (attach to hitArea instead of bg)
+    hitArea.on("pointerover", () => {
+      container.setScale(1.08);
+    });
 
-    bg.on("pointerdown", () => {
+    hitArea.on("pointerout", () => {
+      container.setScale(1);
+    });
+
+    hitArea.on("pointerdown", () => {
       this.cameras.main.fade(300, 0, 0, 0);
-
       this.cameras.main.once("camerafadeoutcomplete", () => {
         this.scene.start("LoadingScene", {
           next: "GameScene",
@@ -203,9 +286,10 @@ export default class LevelScene extends Phaser.Scene {
     // ===== DOTS =====
     for (let i = 0; i < totalPages; i++) {
       const dot = this.add
-        .circle(startX + i * dotSpacing, paginationY, 8, 0xff9800)
+        .circle(startX + i * dotSpacing, paginationY, 8, 0xffc105)
         .setInteractive({ useHandCursor: true })
-        .setAlpha(i === 0 ? 1 : 0.4);
+        .setAlpha(i === 0 ? 1 : 0.4)
+        .setScale(i === 0 ? 1.1 : 0.8);
 
       // CLICKABLE DOT
       dot.on("pointerdown", () => {
@@ -230,7 +314,7 @@ export default class LevelScene extends Phaser.Scene {
   updateDots() {
     this.dots.forEach((dot, index) => {
       if (index === this.currentPage) {
-        dot.setFillStyle(0xff9800);
+        dot.setFillStyle(0xffc105);
         dot.setAlpha(1);
         this.tweens.add({
           targets: dot,
@@ -238,9 +322,9 @@ export default class LevelScene extends Phaser.Scene {
           duration: 200,
         });
       } else {
-        dot.setFillStyle(0xff9800);
+        dot.setFillStyle(0xffc105);
         dot.setAlpha(0.4);
-        dot.setScale(1);
+        dot.setScale(0.8);
       }
     });
   }
@@ -322,26 +406,39 @@ export default class LevelScene extends Phaser.Scene {
   createHomeButton() {
     const { width, height } = this.scale;
 
-    const btnSize = width * 0.09;
+    const btnSize = 50;
 
-    const homeBtn = this.add
-      .rectangle(width - btnSize, height * 0.1, btnSize, btnSize, 0xffd54f)
-      .setStrokeStyle(3, 0xffffff)
-      .setOrigin(0.5)
-      .setInteractive({ useHandCursor: true });
+    // const homeBtn = this.add
+    //   .rectangle(width - btnSize, height * 0.1, btnSize, btnSize, 0xffd54f)
+    //   .setStrokeStyle(3, 0xffffff)
+    //   .setOrigin(0.5)
+    //   .setInteractive({ useHandCursor: true });
 
-    const icon = this.add
-      .text(homeBtn.x, homeBtn.y, "🏠", {
-        fontSize: `${btnSize * 0.5}px`,
-      })
-      .setOrigin(0.5);
+    // const icon = this.add
+    //   .text(homeBtn.x, homeBtn.y, "🏠", {
+    //     fontSize: `${btnSize * 0.5}px`,
+    //   })
+    //   .setOrigin(0.5);
 
-    homeBtn.on("pointerover", () => homeBtn.setScale(1.1));
-    homeBtn.on("pointerout", () => homeBtn.setScale(1));
+    // homeBtn.on("pointerover", () => homeBtn.setScale(1.1));
+    // homeBtn.on("pointerout", () => homeBtn.setScale(1));
 
-    homeBtn.on("pointerdown", () => this.navigateToMenu());
+    // homeBtn.on("pointerdown", () => this.navigateToMenu());
 
-    this.uiContainer.add([homeBtn, icon]);
+    const homeBtn = createRectButton({
+      scene: this,
+      x: width - btnSize,
+      y: height * 0.09,
+      width: btnSize,
+      height: btnSize,
+      imageKey: "home-button",
+      onClick: () => this.navigateToMenu(),
+      radius: btnSize / 2,
+      bgColor: 0xffc105,
+      opacity: 0.05,
+    });
+
+    this.uiContainer.add([homeBtn]);
   }
 
   /* ================= NAVIGATION ================= */
