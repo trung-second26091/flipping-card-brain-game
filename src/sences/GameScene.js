@@ -73,7 +73,13 @@ export default class GameScene extends Phaser.Scene {
 
   preload() {
     this.load.image("search-skill", "/assets/skills/search-mac.png");
-    this.load.image("card", "/assets/cards/cucatim.png");
+    this.load.image("cucatim", "/assets/cards/cucatim.png");
+    this.load.image("base_image", "/assets/cards/base.png");
+    this.load.image("banhtrungthu", "/assets/cards/banhtrungthu.png");
+    this.load.image("bapcaitim", "/assets/cards/bapcaitim.png");
+    this.load.image("bido", "/assets/cards/bido.png");
+    this.load.image("cachua", "/assets/cards/cachua.png");
+    this.load.image("caibexanh", "/assets/cards/caibexanh.png");
 
     UserInformation.preload(this);
   }
@@ -184,10 +190,11 @@ export default class GameScene extends Phaser.Scene {
 
     this.board = new BoardManager(this, {
       shape: levelData.shape,
-      width: this.GAME_WIDTH * 0.7,
+      width: this.GAME_WIDTH * 0.9,
       height: this.GAME_HEIGHT * 0.8,
       x: this.GAME_WIDTH / 2,
       y: this.GAME_HEIGHT / 2 + this.GAME_HEIGHT * 0.05,
+      cardImages: ["banhtrungthu", "bapcaitim", "banhtrungthu", "bapcaitim"],
 
       onMatch: () => {
         // this.gold += 1;
@@ -352,10 +359,10 @@ export default class GameScene extends Phaser.Scene {
     bg.setDepth(-100); // luôn nằm dưới cùng
 
     bg.fillGradientStyle(
-      0xfefce8, // top-left
-      0xfefce8, // top-right
-      0xfef9c2, // bottom-left
-      0xfef9c2, // bottom-right
+      0x1a1a00, // top-left
+      0x1a1a00, // top-right
+      0x1a1a00, // bottom-left
+      0x1a1a00, // bottom-right
       1,
     );
 

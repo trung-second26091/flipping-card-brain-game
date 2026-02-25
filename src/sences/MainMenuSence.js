@@ -152,7 +152,7 @@ export default class MainMenuScene extends Phaser.Scene {
     this.tweens.add({
       targets: btn,
       scale: 1.03,
-      duration: 900,
+      duration: 1500,
       yoyo: true,
       repeat: -1,
       ease: "Sine.InOut",
@@ -166,7 +166,7 @@ export default class MainMenuScene extends Phaser.Scene {
       targets: this.root,
       scale: 0.8,
       alpha: 0,
-      duration: 350,
+      duration: 500,
       ease: "Back.In",
       onComplete: () => {
         this.scene.start("LoadingScene", {

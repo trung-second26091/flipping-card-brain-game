@@ -41,7 +41,7 @@ export function createRectButton({
   if (imageKey) {
     content = scene.add
       .image(imageKey && text ? width * 0.1 - 50 : 0, 0, imageKey)
-      .setDisplaySize(height * 0.5, height * 0.5)
+      .setDisplaySize(height * 0.4, height * 0.4)
       .setOrigin(0.5);
 
     btn.add(content);
@@ -89,12 +89,7 @@ export function createRectButton({
     .setInteractive({ useHandCursor: true });
 
   hit.on("pointerdown", () => {
-    scene.tweens.add({
-      targets: btn,
-      scale: hoverScale + 0.1,
-      yoyo: true,
-      duration: 10,
-    });
+    btn.setScale(hoverScale);
     onClick?.(btn);
   });
 
